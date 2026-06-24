@@ -5,12 +5,29 @@ import httpStatus from "http-status";
 
 const loginUser = catchAsync(async (req, res, next) => {
   const payload = req.body;
-  const loginedUser = await authService.loginUserIntoDB(payload);
+  const { user, accessToken, refreshToken } = await authService.loginUserIntoDB(
+    payload
+  );
+
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 24, // 1day
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7days
+  });
+
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: "User logged in successfully",
-    data: loginedUser,
+    data: { accessToken, refreshToken, user },
   });
 });
 
