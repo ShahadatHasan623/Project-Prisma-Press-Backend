@@ -57,6 +57,10 @@ const updatePost = catchAsync(
     const payload =req.body;
     const authorId =req.user?.id
     const isAdmin =req.user?.role === "ADMIN"
+
+     if(!postId){
+      throw new Error("Post Id Required In Params")
+    }
     
     const result =await postService.updatePost(postId as string,payload,authorId as string,isAdmin)
 
@@ -69,7 +73,24 @@ const updatePost = catchAsync(
   }
 );
 const deletePost = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {}
+  async (req: Request, res: Response, next: NextFunction) => {
+    const postId =req.params.postId;
+    const authorId =req.user?.id;
+    const isAdmin =req.user?.role === "ADMIN"
+
+    if(!postId){
+      throw new Error("Post Id Required In Params")
+    }
+    
+    await postService.deletePost(postId as string,authorId as string,isAdmin)
+
+    sendResponse(res,{
+      success:true,
+      statusCode:HttpStatus.OK,
+      message:"Deleted Post Retrieved Successfully",
+      data:null
+    })
+  }
 );
 const getMyPosts = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
