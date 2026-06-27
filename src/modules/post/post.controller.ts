@@ -35,16 +35,29 @@ const getPostsStats = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {}
 );
 
-const getMyPosts = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {}
-);
 const getPostByID = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {}
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id =req.params.postId
+
+    if(!id){
+      throw new Error("Post Id Required In Params")
+    }
+    const result =await postService.getPostById(id as string)
+    sendResponse(res,{
+      success:true,
+      statusCode:HttpStatus.OK,
+      message:"Single Post Retrieved Successfully",
+      data:result
+    })
+  }
 );
 const updatePost = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {}
 );
 const deletePost = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {}
+);
+const getMyPosts = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {}
 );
 

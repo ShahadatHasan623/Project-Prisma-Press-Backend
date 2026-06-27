@@ -12,6 +12,35 @@ const createPost = async (payload: ICreatePostPayload, userId: string) => {
 };
 const getAllPost = async () => {
   const posts = await prisma.post.findMany({
+    include: {
+      author: {
+        omit: {
+          password: true,
+        },
+      },
+      comments: true,
+    },
+  });
+  return posts;
+};
+const getPostsStats = async () => {};
+const getMyPost = async () => {};
+const getPostById = async (postId: string) => {
+  const post = await prisma.post.findUniqueOrThrow({
+    where: {
+      id: postId,
+    },
+  });
+
+  const updatePost = await prisma.post.update({
+    where: {
+      id: postId,
+    },
+    data:{
+      views:{
+        increment:1
+      }
+    },
     include:{
       author:{
         omit:{
@@ -21,11 +50,8 @@ const getAllPost = async () => {
       comments:true
     }
   });
-  return posts
+  return updatePost;
 };
-const getPostsStats = async () => {};
-const getMyPost = async () => {};
-const getPostById = async () => {};
 const updatePost = async () => {};
 const deletePost = async () => {};
 
