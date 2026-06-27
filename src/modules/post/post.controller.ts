@@ -58,7 +58,17 @@ const deletePost = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {}
 );
 const getMyPosts = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {}
+  async (req: Request, res: Response, next: NextFunction) => {
+    const authorId =req.user?.id
+    const result =await postService.getMyPost(authorId as string)
+
+     sendResponse(res,{
+      success:true,
+      statusCode:HttpStatus.OK,
+      message:"My Post Retrieved Successfully",
+      data:result
+    })
+  }
 );
 
 export const postController = {
