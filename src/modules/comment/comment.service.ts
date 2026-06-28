@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import { IcreatedCommentPayload } from "./comment.interface";
+import { IcreatedCommentPayload, IUpdatedCommentPayload } from "./comment.interface";
 
 const createComment = async (authorId:string,payload:IcreatedCommentPayload) => {
 
@@ -46,7 +46,28 @@ const getCommentByAuthorId = async (authorId:string) => {
    })
    return comments
 };
-const updateComment = async () => {};
+const updateComment = async (commentId:string,data:IUpdatedCommentPayload,authorId:string) => {
+  const commontdata =await prisma.comment.findUniqueOrThrow({
+    where:{
+      id:commentId,
+      authorId
+    },
+   select:{
+    post:true
+   }
+  })
+  if(!commontdata){
+    throw new Error ("Your Provided input is invalid!")
+  }
+  const updatedComment =await prisma.comment.update({
+    where:{
+      id:commentId,
+      authorId
+    },
+    data
+  })
+  return updatedComment;
+};
 const deleteComment = async () => {};
 const moderateCommen = async () => {};
 
