@@ -8,7 +8,7 @@ model Post {
   tags       String[]
   views      Int        @default(0)
   comments   Comment[]
-  authorId   String
+  authorId   String 
   author     User       @relation(fields: [authorId], references: [id])
 
   createdAt DateTime @default(now())

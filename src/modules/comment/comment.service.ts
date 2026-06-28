@@ -27,7 +27,25 @@ const getCommentById = async (commetnId:string) => {
     })
     return comment
 };
-const getCommentByAuthorId = async () => {};
+const getCommentByAuthorId = async (authorId:string) => {
+   const comments =await prisma.comment.findMany({
+    where:{
+      authorId
+    },
+    orderBy:{
+      createdAt:"desc"
+    },
+    include:{
+      post:{
+        select:{
+          id:true,
+          title:true
+        }
+      }
+    }
+   })
+   return comments
+};
 const updateComment = async () => {};
 const deleteComment = async () => {};
 const moderateCommen = async () => {};

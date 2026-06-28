@@ -31,7 +31,17 @@ const getCommentById = catchAsync(
   }
 );
 const getCommentByAuthorId = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {}
+  async (req: Request, res: Response, next: NextFunction) => {
+    const {authorId} =req.params;
+    const result =await commnetService.getCommentByAuthorId(authorId as string)
+
+      sendResponse(res,{
+      success:true,
+      statusCode:HttpStatus.OK,
+      message:"comment by authorId Retrived successfully!",
+      data:result
+    })
+  }
 );
 const updateComment = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {}
