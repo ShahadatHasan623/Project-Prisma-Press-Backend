@@ -13,6 +13,60 @@ const createPost = async (payload: ICreatePostPayload, userId: string) => {
 };
 const getAllPost = async () => {
   const posts = await prisma.post.findMany({
+    //* filtering / exact match with AND Operator
+    // where: {
+    //   AND: [
+    //     { title: "My five Post" },
+    //     { content: "Ronaldo" },
+    //     {
+    //       tags: {
+    //          hasSome:["typescript"]
+    //       },
+    //     },
+    //   ],
+    // },
+
+    //* Searching and partial match
+    // where:{
+    //   OR:[
+    //     {
+    //       title:{
+    //         contains:"ron",
+    //         mode:"insensitive"
+    //       }
+    //     },
+    //     {
+    //       content:{
+    //         contains:"Ronaldo",
+    //         mode:"insensitive"
+    //       }
+    //     }
+    //   ]
+    // },
+
+    //* partial searching (OR) and exact Filtering (AND)
+    where: {
+      AND: [
+        {
+          OR: [
+            { title: { contains: "Ron", mode: "insensitive" } },
+            {
+              content: {
+                contains: "ron",
+                mode: "insensitive",
+              },
+            },
+          ],
+        },
+        {
+          title: "Ronaldo Nazario",
+        },
+        {
+          content: "Ronaldo",
+        },
+      ],
+    },
+
     include: {
       author: {
         omit: {
@@ -124,8 +178,8 @@ const getPostsStats = async () => {
       totalComments,
       totalRejectComments,
       totalApprovedComments,
-      totalPostViews:totalPostViewsAggregate._sum.views
-    }
+      totalPostViews: totalPostViewsAggregate._sum.views,
+    };
   });
   return transactionResult;
 };
