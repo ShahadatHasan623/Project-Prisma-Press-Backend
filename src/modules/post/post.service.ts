@@ -1,6 +1,12 @@
+import { title } from "node:process";
 import { CommentStatus, PostStatus } from "../../../generated/prisma/enums";
+import { PostWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
-import { ICreatePostPayload, IUpdatedPostPayload } from "./post.interface";
+import {
+  ICreatePostPayload,
+  IPostQuery,
+  IUpdatedPostPayload,
+} from "./post.interface";
 
 const createPost = async (payload: ICreatePostPayload, userId: string) => {
   const result = await prisma.post.create({
@@ -11,7 +17,14 @@ const createPost = async (payload: ICreatePostPayload, userId: string) => {
   });
   return result;
 };
-const getAllPost = async () => {
+
+const getAllPost = async (query: IPostQuery) => {
+  const limit = query.limit ? Number(query.limit) : 10;
+  const page = query.page ? Number(query.page) : 1;
+  const skip = (page - 1) * limit;
+
+  const sortBy = query.sortBy ? query.sortBy : "createdAt";
+  const sortOrder = query.sortOrder ? query.sortOrder : "desc";
   const posts = await prisma.post.findMany({
     //* filtering / exact match with AND Operator
     // where: {
@@ -45,26 +58,71 @@ const getAllPost = async () => {
     // },
 
     //* partial searching (OR) and exact Filtering (AND)
+    // where: {
+    //   AND: [
+    //     {
+    //       OR: [
+    //         { title: { contains: "Ron", mode: "insensitive" } },
+    //         {
+    //           content: {
+    //             contains: "ron",
+    //             mode: "insensitive",
+    //           },
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       title: "Ronaldo Nazario",
+    //     },
+    //     {
+    //       content: "Ronaldo",
+    //     },
+    //   ],
+    // },
+
+    // pagination
+    // take:3,
+    // skip:2,
+
+    //sorting
+    // orderBy:{
+    //   createdAt:"desc"
+    // },
+
     where: {
       AND: [
-        {
-          OR: [
-            { title: { contains: "Ron", mode: "insensitive" } },
-            {
-              content: {
-                contains: "ron",
-                mode: "insensitive",
-              },
-            },
-          ],
-        },
-        {
-          title: "Ronaldo Nazario",
-        },
-        {
-          content: "Ronaldo",
-        },
+        query.searchTerm
+          ? {
+              OR: [
+                {
+                  title: {
+                    contains: query.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  content: {
+                    contains: query.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            }
+          : {},
+        // title filtering
+        query.title ? { title: query.title } : {},
+
+        //content filtering
+
+        query.content ? { content: query.content } : {},
       ],
+    },
+
+    take: limit,
+    skip: skip,
+
+    orderBy: {
+      [sortBy]: sortOrder,
     },
 
     include: {
