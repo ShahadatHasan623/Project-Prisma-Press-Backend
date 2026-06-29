@@ -10,3 +10,7 @@ export interface IUpdatedCommentPayload {
   content?: string;
   status?: CommentStatus;
 }
+
+export interface ICreatedModeratorPayload {
+  status: CommentStatus;
+}
