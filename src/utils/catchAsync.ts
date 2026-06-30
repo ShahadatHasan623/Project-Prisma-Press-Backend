@@ -6,15 +6,15 @@ export const catchAsync = (fn: RequestHandler) => {
     try {
       await fn(req, res, next);
     } catch (error) {
-      console.error("Error registering user:", error);
-      res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-        success: false,
-        statusbar: httpStatus.INTERNAL_SERVER_ERROR,
-        message: "Failed to create user",
-        data: null,
-        error:
-          error instanceof Error ? error.message : "An unknown error occurred",
-      });
+      // res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      //   success: false,
+      //   statusbar: httpStatus.INTERNAL_SERVER_ERROR,
+      //   message: "Failed to create user",
+      //   data: null,
+      //   error:
+      //     error instanceof Error ? error.message : "An unknown error occurred",
+      // });
+      next(error)
     }
   };
 };
