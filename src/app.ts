@@ -9,6 +9,7 @@ import { commentRouter } from "./modules/comment/comment.route";
 import { NotFound } from "./middleware/NotFound";
 import httpStatus from "http-status"
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
+import { subscriptionRoute } from "./modules/subscription/subscription.route";
 
 const app: Application = express();
 app.use(
@@ -31,27 +32,9 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth/", authRoute);
 app.use("/api/posts", postRouter);
 app.use("/api/comments", commentRouter);
-
-// app.use((req: Request, res: Response) => {
-//   res.status(404).json({
-//     message: "Route Not Found",
-//     path: req.originalUrl,
-//     date: Date(),
-//   });
-// });
+app.use("/api/subscription",subscriptionRoute)
 
 app.use(NotFound)
-
-// app.use((err:any,req:Request,res:Response,next:NextFunction)=>{
-//   res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-//         success: false,
-//         statuCode: httpStatus.INTERNAL_SERVER_ERROR,
-//         message:err.message,
-//         name:err.name,
-//         error:err.stack
-//       });
-// })
-
 app.use(globalErrorHandler)
 
 export default app;
