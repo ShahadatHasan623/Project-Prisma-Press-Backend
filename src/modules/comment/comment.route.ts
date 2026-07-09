@@ -6,7 +6,7 @@ import { commentsController } from "./comment.controller";
 const router = Router();
 
 router.post('/',auth(Role.ADMIN,Role.USER,Role.AUTHOR),commentsController.createComment)
-router.get("/:commentId",commentsController.getCommentById)
+router.get("/:postId",commentsController.getCommentById)
 router.get("/author/:authorId",commentsController.getCommentByAuthorId)
 router.patch('/:commentId',auth(Role.ADMIN,Role.AUTHOR,Role.USER),commentsController.updateComment)
 router.delete('/:commentId',auth(Role.ADMIN,Role.USER,Role.AUTHOR),commentsController.deleteComment)

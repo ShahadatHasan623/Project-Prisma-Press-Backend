@@ -24,10 +24,10 @@ const createComment = async (
 
   return comment;
 };
-const getCommentById = async (commetnId: string) => {
+const getCommentById = async (postId: string) => {
   const comment = await prisma.comment.findMany({
     where: {
-      id: commetnId,
+      postId,
     },
   });
   return comment;
