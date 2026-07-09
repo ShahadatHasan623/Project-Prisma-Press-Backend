@@ -11,6 +11,7 @@ import httpStatus from "http-status";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import { subscriptionRoute } from "./modules/subscription/subscription.route";
 import { stripe } from "./lib/stripe";
+import { premiumRoutes } from "./premium/premium.route";
 
 const app: Application = express();
 
@@ -89,6 +90,7 @@ app.use("/api/auth/", authRoute);
 app.use("/api/posts", postRouter);
 app.use("/api/comments", commentRouter);
 app.use("/api/subscription", subscriptionRoute);
+app.use("/api/premium",premiumRoutes)
 
 app.use(NotFound);
 app.use(globalErrorHandler);
