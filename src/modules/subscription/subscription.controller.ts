@@ -18,7 +18,7 @@ const createSubscriptionSession = catchAsync(
     });
   }
 );
-const handleWebhook = catchAsync(async (req: Request, res: Response) => {
+const handleWebhook = catchAsync(async (req: Request, res: Response,next:NextFunction) => {
   console.log("Webhook Hit");
   console.log("Body Buffer:", Buffer.isBuffer(req.body));
   console.log("Signature:", req.headers["stripe-signature"]);
@@ -32,7 +32,20 @@ const handleWebhook = catchAsync(async (req: Request, res: Response) => {
     success: true,
   });
 });
+
+const getSubscriptionStatus =catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
+  const userId =req.user?.id;
+  const result =await subscriptionService.getSubscriptionStatus(userId as string);
+
+  sendResponse(res,{
+    success:true,
+    statusCode:httpStatus.OK,
+    message:"Subscription status retrived successfully",
+    data:result
+  })
+})
 export const subscriptionController = {
   createSubscriptionSession,
   handleWebhook,
+  getSubscriptionStatus
 };
